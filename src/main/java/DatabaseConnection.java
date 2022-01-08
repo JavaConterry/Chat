@@ -1,8 +1,10 @@
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import org.bson.BSONObject;
 import org.bson.Document;
 
 public class DatabaseConnection {
@@ -16,12 +18,19 @@ public class DatabaseConnection {
     }
 
     public static void putMassageIntoChatCollection(Massage massage){
-        Document document = new Document();
-        document.put("sender", massage.sender.getNickname());
-        document.put("recipient", massage.recipient.getNickname());
-        document.put("text", massage.text);
+        DBObject document = new BasicDBObject("sender", massage.sender.getNickname())
+                .append("recipient", massage.recipient.getNickname())
+                .append("text", massage.text);
 
         collection.insertOne(document);
+    }
+
+    public String getMassageTextInChatCollectionWith(User user){
+        BasicDBObject obj = new BasicDBObject();
+        obj.put("sender", user.getNickname());
+        MongoCursor<Document> cursor = collection.find(obj).iterator();
+        Document foundMassage = cursor.next();
+        return foundMassage.get("text").toString();
     }
 
 }

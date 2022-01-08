@@ -1,7 +1,5 @@
 //ToDo: more safety when db collects massages than users sends, because of access to db
 
-import org.bson.Document;
-
 public class User {
     private String nickname;
 
@@ -18,5 +16,10 @@ public class User {
         dbAccess.putMassageIntoChatCollection(massage);
     }
 
+    //Todo: in the cycle it will take new massage every new cycle
+    public String getLastMessageFrom(User user){
+        DatabaseConnection dbAccess = new DatabaseConnection("infoexchanger");
+        return dbAccess.getMassageTextInChatCollectionWith(user);
+    }
 }
 
